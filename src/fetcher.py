@@ -1,15 +1,6 @@
 from io import BytesIO 
-import pandas as pd 
 import requests 
-import sqlite3
 import zipfile 
-
-
-pd.set_option("display.max_columns", None)
-# Don't truncate text inside individual cell values
-pd.set_option("display.max_colwidth", None)
-# Prevents wide tables from wrapping onto a new line below
-pd.set_option("display.width", None)
 
 # Download GTFS data 
 def download_gtfs(operator='nmbssncb'): 
@@ -26,12 +17,5 @@ def download_gtfs(operator='nmbssncb'):
         return zipfile.ZipFile(BytesIO(response.content)) 
     else: 
         raise Exception(f"Failed to download: {response.status_code}") 
-    
-# Extract and read stops 
-gtfs_zip = download_gtfs()
-for document in gtfs_zip.namelist():
-    doc_df = pd.read_csv(gtfs_zip.open(document))
-    print("_" * 50)
-    print(document, ":\n")
-    print(doc_df.info(), "\n")
-    print(doc_df.head(), "\n")
+
+
