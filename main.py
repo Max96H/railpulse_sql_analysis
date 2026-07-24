@@ -5,6 +5,8 @@ import sqlite3
 from src.cleaning import clean_row_generator
 from src.fetcher import download_gtfs
 from src.peak_hour import query_peak_hour
+from src.busy_platforms import query_busiest_platforms
+from src.diagnosis import diagnose
 """
 pd.set_option("display.max_columns", None)
 # Don't truncate text inside individual cell values
@@ -17,6 +19,8 @@ def main():
     # faster than journal
     # conn.execute("PRAGMA journal_mode=WAL;")
     cursor = conn.cursor()
+
+    #diagnose(cursor)
 
     # Create tables once
     creation = ""
@@ -74,6 +78,16 @@ def main():
     q_peak_hour = input("Do you wish to query the peak hour ? (y|n)\n")
     if q_peak_hour == "y":
         query_peak_hour(cursor)
+
+    q_busy_platforms = input("Do you wish to know the busiest platforms ? (y|n)\n")
+    if q_busy_platforms == "y":
+        station = input("From wich station ? (Default: 'Bruxelles-Central')\n")
+        n_platforms = input("Top how many? (Default: 3)\n")
+        if not station:
+            station = 'Bruxelles-Central'
+        if not n_platforms:
+            n_platforms = 3
+        query_busiest_platforms(cursor, station, n_platforms)
 
     cursor.close()
     conn.close()
