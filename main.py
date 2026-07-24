@@ -7,6 +7,7 @@ from src.fetcher import download_gtfs
 from src.peak_hour import query_peak_hour
 from src.busy_platforms import query_busiest_platforms
 from src.diagnosis import diagnose
+from src.morning_destinations import query_frequent_morning_destinations
 """
 pd.set_option("display.max_columns", None)
 # Don't truncate text inside individual cell values
@@ -88,6 +89,11 @@ def main():
         if not n_platforms:
             n_platforms = 3
         query_busiest_platforms(cursor, station, n_platforms)
+
+    q_morning_destinations = input("Do you wish to know most frequent morning destinations? (y|n)\n")
+    if q_morning_destinations == "y":
+        n_stations = input("Top how many? (Default: 3)\n")
+        query_frequent_morning_destinations(cursor, n_stations)
 
     cursor.close()
     conn.close()
