@@ -7,13 +7,8 @@ from src.diagnosis import diagnose
 from src.morning_destinations import query_frequent_morning_destinations
 from src.service_frequency import query_service_frequency
 from src.accessibility import query_accessibility
-"""
-pd.set_option("display.max_columns", None)
-# Don't truncate text inside individual cell values
-pd.set_option("display.max_colwidth", None)
-# Prevents wide tables from wrapping onto a new line below
-pd.set_option("display.width", None)
-"""
+
+
 def main():
     conn = sqlite3.connect("./data/sncb.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
     # faster than journal
