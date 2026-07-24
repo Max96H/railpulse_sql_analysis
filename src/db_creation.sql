@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS stops;
 DROP TABLE IF EXISTS stop_times;
 DROP TABLE IF EXISTS transfers;
 DROP TABLE IF EXISTS trips;
--- DROP TABLE IF EXISTS routes;
+DROP TABLE IF EXISTS routes;
 
 -- Turn on foreign key enforcement in SQLite
 PRAGMA foreign_keys = ON;
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS stop_times (
 );
 
 CREATE TABLE IF NOT EXISTS trips (
-    bikes_allowed         REAL,
+    bikes_allowed         INTEGER,
     block_id              INTEGER NOT NULL,
     direction_id          INTEGER,
     route_id              TEXT NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS trips (
     trip_short_name       INTEGER NOT NULL,
     wheelchair_accessible INTEGER,
 
-    --FOREIGN KEY (route_id) REFERENCES routes (route_id)
+    FOREIGN KEY (route_id) REFERENCES routes (route_id)
     FOREIGN KEY (service_id) REFERENCES calendar (service_id)
 
 );
@@ -97,6 +97,18 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (from_trip_id) REFERENCES trips (trip_id),
     FOREIGN KEY (to_trip_id) REFERENCES trips (trip_id)
 
+);
+
+CREATE TABLE IF NOT EXISTS routes (
+    agency_id    TEXT NOT NULL,
+    route_color  TEXT NOT NULL,
+    route_desc   TEXT,
+    route_id     TEXT PRIMARY KEY,
+    route_long_name  TEXT NOT NULL,
+    route_short_name TEXT NOT NULL,
+    route_text_color TEXT NOT NULL,
+    route_type       INTEGER NOT NULL,
+    route_url        TEXT
 );
 
 -- Reclaim unused disk space

@@ -9,6 +9,7 @@ from src.busy_platforms import query_busiest_platforms
 from src.diagnosis import diagnose
 from src.morning_destinations import query_frequent_morning_destinations
 from src.service_frequency import query_service_frequency
+from src.accessibility import query_accessibility
 """
 pd.set_option("display.max_columns", None)
 # Don't truncate text inside individual cell values
@@ -39,9 +40,7 @@ def main():
         except sqlite3.Error as e:
             print("Error :", e)
             conn.rollback()
-        cursor.close()
-        conn.close()
-        return
+
     extraction = ""
     while not extraction in ("y", "n"):
         extraction = input("Do you want to extract and insert data from the API to db? (y|n)\n")
@@ -49,7 +48,7 @@ def main():
     if extraction == "y":
         gtfs_zip = download_gtfs()
         for document in gtfs_zip.namelist():
-            if not document.endswith(".txt") or document in ("agency.txt", "feed_info.txt", "routes.txt", "transfers.txt", "translations.txt"):
+            if not document.endswith(".txt") or document in ("agency.txt", "feed_info.txt", "transfers.txt", "translations.txt"):
                 continue
             binary_file = gtfs_zip.open(document)
             """
@@ -75,6 +74,10 @@ def main():
             # Batch insert
             cursor.executemany(sql_query, clean_row_generator(reader))
             conn.commit()
+    elif creation == "y":
+        cursor.close()
+        conn.close()
+        return
 
 
     q_peak_hour = input("Do you wish to query the peak hour ? (y|n)\n")
@@ -99,6 +102,10 @@ def main():
     q_service_freq = input("Do you wish to see and add service frequencies ? (y|n)\n")
     if q_service_freq == "y":
         query_service_frequency(cursor)
+
+    q_accessibility = input("Do you wish to do an accessibility audit? (y|n)\n")
+    if q_accessibility == "y":
+        query_accessibility(cursor)
 
     cursor.close()
     conn.close()
