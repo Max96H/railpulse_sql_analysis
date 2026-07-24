@@ -4,6 +4,7 @@ import io
 import sqlite3
 from src.cleaning import clean_row_generator
 from src.fetcher import download_gtfs
+from src.peak_hour import query_peak_hour
 """
 pd.set_option("display.max_columns", None)
 # Don't truncate text inside individual cell values
@@ -13,6 +14,8 @@ pd.set_option("display.width", None)
 """
 def main():
     conn = sqlite3.connect("./data/sncb.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+    # faster than journal
+    # conn.execute("PRAGMA journal_mode=WAL;")
     cursor = conn.cursor()
 
     # Create tables once
@@ -66,6 +69,11 @@ def main():
             # Batch insert
             cursor.executemany(sql_query, clean_row_generator(reader))
             conn.commit()
+
+
+    q_peak_hour = input("Do you wish to query the peak hour ? (y|n)\n")
+    if q_peak_hour == "y":
+        query_peak_hour(cursor)
 
     cursor.close()
     conn.close()
