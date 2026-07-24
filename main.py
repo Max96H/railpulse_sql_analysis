@@ -12,7 +12,7 @@ pd.set_option("display.max_colwidth", None)
 pd.set_option("display.width", None)
 """
 def main():
-    conn = sqlite3.connect("./data/sncb.db")
+    conn = sqlite3.connect("./data/sncb.db", detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
     cursor = conn.cursor()
 
     # Create tables once

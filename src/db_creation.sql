@@ -1,5 +1,5 @@
--- Turn on foreign key enforcement in SQLite
-PRAGMA foreign_keys = ON;
+-- Turn off foreign key enforcement in SQLite to avoid bugs while dropping tables in wrong order
+PRAGMA foreign_keys = OFF;
 
 DROP TABLE IF EXISTS calendar_dates;
 DROP TABLE IF EXISTS calendar;
@@ -10,9 +10,12 @@ DROP TABLE IF EXISTS transfers;
 DROP TABLE IF EXISTS trips;
 -- DROP TABLE IF EXISTS routes;
 
+-- Turn on foreign key enforcement in SQLite
+PRAGMA foreign_keys = ON;
+
 -- Create 'calendar_dates' table
 CREATE TABLE IF NOT EXISTS calendar_dates (
-    date              TEXT NOT NULL,
+    date              DATE NOT NULL,
     exception_type    INTEGER NOT NULL,
     service_id        TEXT NOT NULL,
     FOREIGN KEY (service_id) REFERENCES calendar (service_id)
@@ -20,12 +23,12 @@ CREATE TABLE IF NOT EXISTS calendar_dates (
 
 -- Create 'calendar' table 
 CREATE TABLE IF NOT EXISTS calendar (
-    end_date      INTEGER NOT NULL,
+    end_date      DATE NOT NULL,
     friday        INTEGER NOT NULL,
     monday        INTEGER NOT NULL,
     saturday      INTEGER NOT NULL,
     service_id    TEXT PRIMARY KEY,
-    start_date    INTEGER NOT NULL,
+    start_date    DATE NOT NULL,
     sunday        INTEGER NOT NULL,
     thursday      INTEGER NOT NULL,
     tuesday       INTEGER NOT NULL,
@@ -50,8 +53,8 @@ CREATE TABLE IF NOT EXISTS stops (
 
 
 CREATE TABLE IF NOT EXISTS stop_times (
-    arrival_time         TEXT NOT NULL,
-    departure_time       TEXT NOT NULL,
+    arrival_time         TIME NOT NULL,
+    departure_time       TIME NOT NULL,
     drop_off_type        INTEGER NOT NULL,
     pickup_type          INTEGER NOT NULL,
     shape_dist_traveled  REAL,
@@ -91,14 +94,13 @@ CREATE TABLE IF NOT EXISTS transfers (
 
     FOREIGN KEY (from_stop_id) REFERENCES stops (stop_id),
     FOREIGN KEY (to_stop_id) REFERENCES stops (stop_id),
-    FOREIGN KEY (from_trip_id) REFERENCES trips (from_trip_id),
-    FOREIGN KEY (to_trip_id) REFERENCES trips (from_trip_id)
+    FOREIGN KEY (from_trip_id) REFERENCES trips (trip_id),
+    FOREIGN KEY (to_trip_id) REFERENCES trips (trip_id)
 
 );
 
-
-
-
+-- Reclaim unused disk space
+VACUUM;
 
 
 

@@ -219,3 +219,4 @@ __marimo__/
 
 *.txt
 *.db
+*.db-journal
