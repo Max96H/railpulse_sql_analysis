@@ -217,7 +217,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-*.txt
+erd.txt
+info.txt
 *.db
 *.db-journal
 diagnosis.py
